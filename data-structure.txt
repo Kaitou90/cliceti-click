@@ -1,0 +1,61 @@
+{
+	'evil':
+	'good':
+	'neutral': {
+		'alliances': {
+			'merchanary',
+			'titan',
+			'faceless',
+			'druid'
+		}
+		'buildings': {
+			'farms': {
+				'count':
+				'cost per building': 1.2 x count
+				'img':
+			}
+			'inn':
+			'blacksmith':
+			'deep mine':
+			'stone pillars':
+			'alchemist lab':
+			'monastery':
+			'labyrinth':
+			'iron stronghold':
+			'ancient pyramid':
+			'hall of legends':
+		}
+	}
+	'upgrades': {
+		'fork': {
+			'cost':
+			'affect':
+			'effect':
+			'flavor text':
+			'img':
+			'purhased': boolean
+			'visibility rules': {always / only if} (can be multible rules)
+		}
+	}
+	'fraction coins': {
+		'devil': {
+			'required for next exchange':
+			'count':
+			'boost per exchange':
+		}
+		'titan':
+		'faceless':
+		'druid':
+	}
+	'mana': {
+		'max':
+		'generation per second':
+	}
+	'spells': {
+		'name': {
+			'mana cost':
+			'description':
+			'alliance': alliance name / all
+		}
+	}
+}
