@@ -4,9 +4,15 @@ import time
 import pygame
 
 ##### INITIATING PARAMS #####
+
+gameStart = pygame.init()
+
+
+display_width = 800
+display_height = 600
+
 game_start = datetime.now()
 
-count, coin, coinsPerSec = 0, 0, 0
 active = True
 building = {
 	"farm": {
@@ -19,50 +25,61 @@ building = {
 	},
 }
 
-##### STARTING THE GAME LOOP #####
 
-gameStart = pygame.init()
-dameDisplay = pygame.display.set_mode((800,600))
+black = (0,0,0)
+white = (255,255,255)
+red = (255,0,0)
+
+gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('clicketi-click game')
 
-clock = pygame.time.Clock()
-crashed = False
-
-while not crashed:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			crashed = True
-
-		print(event)
-
-	pygame.display.update()
-	clock.tick(60)
-
-pygame.quit()
-quit()
-
-
-
-
+##### GAME LOGIC / FUNCTIONS #####
 
 # count how much coins buildings are producing in second
-for x in building:
-	print(x)
-	print(building[x]["coinPerBuilding"])
-	coinsPerSec += building[x]["coinPerBuilding"] * building[x]["amount"]
-	print('coins per second ' , coinsPerSec)
+def coinsCounter(building):
+	coinsPerSec = 0
+	for x in building:
+		coinsPerSec += building[x]["coinPerBuilding"] * building[x]["amount"]
+	return coinsPerSec
+
+def text_block(coin):
+		font = pygame.font.SysFont(None, 25)
+		text = font.render("Coin counter: "+str(coin), True, black)
+		gameDisplay.blit(text,(0,0))
 
 
-# coin production calculator; total amount of coins
-while (active):
-	print(count )
-	print("coin ", coin )
 
-	time.sleep(1)
-	count += 1
-	coin += coinsPerSec
+##### STARTING THE GAME LOOP #####
+def game_loop():
+
+	clock = pygame.time.Clock()
+	gameExit = False
+
+	coinsPerSec = coinsCounter(building)
+	coin = 0
+
+	print(coinsPerSec)
+
+	while not gameExit:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				gameExit = True
 
 
-#
+		gameDisplay.fill(white)
 
+		text_block(coin)
+
+		coin += coinsPerSec
+
+		pygame.display.update()
+		clock.tick(1)
+
+##### END OF GAME LOOP #####
+
+
+##### START THE GAME #####
+game_loop()
+pygame.quit()
+quit()
 
