@@ -11,7 +11,6 @@ gameStart = pygame.init()
 display_width = 800
 display_height = 600
 
-game_start = datetime.now()
 
 active = True
 building = {
@@ -22,6 +21,10 @@ building = {
 	"inn": {
 		"amount": 5,
 		"coinPerBuilding": 2
+	},
+	"blacksmith": {
+		"amount": 5,
+		"coinPerBuilding": 3
 	},
 }
 
@@ -58,6 +61,9 @@ def text_objects(text, font):
 ##### STARTING THE GAME LOOP #####
 def game_loop():
 
+	gameStart = datetime.now()
+	timeCounter = datetime.now()
+
 	clock = pygame.time.Clock()
 	gameExit = False
 
@@ -74,21 +80,62 @@ def game_loop():
 		mouse = pygame.mouse.get_pos()
 		print(mouse)
 
+		# actions and events that are hapening every second
+		if (datetime.now() - timeCounter).total_seconds() > 0.99 :
+			timeCounter = datetime.now()
+			# if timeCounter - datetime.now()
+			coin += coinsPerSec
+			#print(timeCounter )
+
+
+		##### PYGAME DRAWING FUNCTIONALITY #####
 		gameDisplay.fill(white)
 
 		text_block(coin, 0, 0)
 
-		if 550+100 > mouse[0] > 550 and 450+50 > mouse[1] > 450:
-			pygame.draw.rect(gameDisplay, bright_red,(550,450,100,50))
-		else :
-			pygame.draw.rect(gameDisplay, red,(550,450,100,50))
 
-		btnSurf, btnText = text_objects("GO!", pygame.font.Font("freesansbold.ttf",20))
-		btnText.center = ( (550+(100/2)), (450+(50/2)) )
-		gameDisplay.blit(btnSurf, btnText)
+		#if 550+100 > mouse[0] > 550 and 450+50 > mouse[1] > 450:
+		#	pygame.draw.rect(gameDisplay, bright_red,(550,450,100,50))
+		#else :
+		#	pygame.draw.rect(gameDisplay, red,(550,450,100,50))
 
-		coin += coinsPerSec
 
+		# Upgrades display on left side of the screen
+		upgradesBtnY = 100
+		for x in building:
+			pygame.draw.rect(gameDisplay, bright_red,(50,upgradesBtnY,50,50))
+
+			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
+			btnText.center = ( (50+(100/2)), (upgradesBtnY+(50/2)) )
+			gameDisplay.blit(btnSurf, btnText)
+
+			upgradesBtnY += 55
+
+
+		# Mana and spells on right side of the screen
+		spellBtnY = 100
+		for x in building:
+			pygame.draw.rect(gameDisplay, bright_red,(400,spellBtnY,100,50))
+
+			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
+			btnText.center = ( (50+(100/2)), (spellBtnY+(50/2)) )
+			gameDisplay.blit(btnSurf, btnText)
+
+			spellBtnY += 55
+
+
+		# Constructions on right side of the screen
+		buildingBtnY = 100
+		for x in building:
+			pygame.draw.rect(gameDisplay, bright_red,(550,buildingBtnY,150,50))
+
+			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
+			btnText.center = ( (550+(100/2)), (buildingBtnY+(50/2)) )
+			gameDisplay.blit(btnSurf, btnText)
+
+			buildingBtnY += 55
+
+		##### KEEP THESE AT BOTTOM OF GAME LOOP
 		pygame.display.update()
 		clock.tick(60)
 
