@@ -29,12 +29,29 @@
 	'upgrades': {
 		'fork': {
 			'cost':
-			'affect':
-			'effect':
-			'flavor text':
+			'affect': { 
+				building
+				aligment
+				gems
+				exchange
+			}
+			'effect': {
+				boost on production/gems/exchanges
+				add more run time to spells
+				more assistants
+			}
+			'description':
 			'img':
 			'purhased': boolean
-			'visibility rules': {always / only if} (can be multible rules)
+			conditions: {
+				alliance
+				previous upgrades
+				special buildings
+				building amount
+				gems
+				exchange
+
+			}
 		}
 	}
 	'fraction coins': {

@@ -30,8 +30,8 @@ class Building():
 	def coins_counter(self):
 		return self.coinPerBuilding * self.count
 	
-	def get_building_info:
+	def get_building_info():
 		pass
 
-	def get_all_buildings_info:
+	def get_all_buildings_info():
 		pass

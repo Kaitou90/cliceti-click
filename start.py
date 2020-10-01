@@ -1,7 +1,7 @@
 from __future__ import print_function
 from datetime import datetime
-import time
 import pygame
+from app.building import Building
 
 ##### INITIATING PARAMS #####
 
@@ -13,6 +13,7 @@ display_height = 600
 
 
 active = True
+bulk = ["1", "10", "100", "1000", "smart", "max"]
 building = {
 	"farm": {
 		"amount": 3,
@@ -26,6 +27,54 @@ building = {
 		"amount": 5,
 		"coinPerBuilding": 3
 	},
+}
+
+spells = {
+	"tax collection": {
+		"manaRequired": 200,
+		"description": ""
+	},
+	"production boost": {
+		"manaRequired": 400,
+		"description": "",
+	},
+	"gem power": {
+		"manaRequired": 1000,
+		"description": ""
+	}
+}
+
+upgrades = {
+	"farm production I": {
+		"cost": 500,
+		"description": "",
+		"affect": "farms",
+		"effect": "100%"
+	},
+	"farm production II": {
+		"cost": 500,
+		"description": "",
+		"affect": "farms",
+		"effect": "100%"
+	},
+	"farm production III": {
+		"cost": 500,
+		"description": "",
+		"affect": "farms",
+		"effect": "100%"
+	},
+	"farm production IV": {
+		"cost": 500,
+		"description": "",
+		"affect": "farms",
+		"effect": "100%"
+	},
+	"farm production V": {
+		"cost": 500,
+		"description": "",
+		"affect": "farms",
+		"effect": "100%"
+	}
 }
 
 
@@ -102,8 +151,11 @@ def game_loop():
 
 		# Upgrades display on left side of the screen
 		upgradesBtnY = 100
-		for x in building:
-			pygame.draw.rect(gameDisplay, bright_red,(50,upgradesBtnY,50,50))
+		for x in upgrades:
+			if 50+50 > mouse[0] > 50 and upgradesBtnY+50 > mouse[1] > upgradesBtnY :
+				pygame.draw.rect(gameDisplay, bright_red,(50,upgradesBtnY,50,50))
+			else :
+				pygame.draw.rect(gameDisplay, red,(50,upgradesBtnY,50,50))
 
 			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
 			btnText.center = ( (50+(100/2)), (upgradesBtnY+(50/2)) )
@@ -114,23 +166,45 @@ def game_loop():
 
 		# Mana and spells on right side of the screen
 		spellBtnY = 100
-		for x in building:
-			pygame.draw.rect(gameDisplay, bright_red,(400,spellBtnY,100,50))
+		for x in spells:
+			if 400+100 > mouse[0] > 400 and spellBtnY+50 > mouse[1] > spellBtnY :
+				pygame.draw.rect(gameDisplay, bright_red,(400,spellBtnY,100,50))
+			else :
+				pygame.draw.rect(gameDisplay, red,(400,spellBtnY,100,50))
 
 			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
-			btnText.center = ( (50+(100/2)), (spellBtnY+(50/2)) )
+			btnText.center = ( (400+(100/2)), (spellBtnY+(50/2)) )
 			gameDisplay.blit(btnSurf, btnText)
 
 			spellBtnY += 55
+
+		
+		bulkIterator = 0
+		if 400+100 > mouse[0] > 400 and 500+50 > mouse[1] > 500 :
+			pygame.draw.rect(gameDisplay, bright_red,(400,500,100,50))
+
+			if bulkIterator >= 5:
+				bulkIterator = 0
+			else:
+				bulkIterator +=1
+		else :
+			pygame.draw.rect(gameDisplay, red,(400,500,100,50))
+
+		btnSurf, btnText = text_objects(bulk[bulkIterator], pygame.font.Font("freesansbold.ttf",20))
+		btnText.center = ( (400+(100/2)), (500+(50/2)) )
+		gameDisplay.blit(btnSurf, btnText)
 
 
 		# Constructions on right side of the screen
 		buildingBtnY = 100
 		for x in building:
-			pygame.draw.rect(gameDisplay, bright_red,(550,buildingBtnY,150,50))
+			if 550+150 > mouse[0] > 550 and buildingBtnY+50 > mouse[1] > buildingBtnY :
+				pygame.draw.rect(gameDisplay, bright_red,(550,buildingBtnY,150,50))
+			else :
+				pygame.draw.rect(gameDisplay, red,(550,buildingBtnY,150,50))
 
 			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
-			btnText.center = ( (550+(100/2)), (buildingBtnY+(50/2)) )
+			btnText.center = ( (550+(150/2)), (buildingBtnY+(50/2)) )
 			gameDisplay.blit(btnSurf, btnText)
 
 			buildingBtnY += 55
