@@ -14,7 +14,7 @@ display_height = 600
 
 active = True
 bulk = ["1", "10", "100", "1000", "smart", "max"]
-building = {
+buildings = {
 	"farm": {
 		"amount": 3,
 		"coinPerBuilding": 0.5
@@ -76,6 +76,7 @@ upgrades = {
 		"effect": "100%"
 	}
 }
+bulkIterator = 0
 
 
 black = (0,0,0)
@@ -92,10 +93,10 @@ pygame.display.set_caption('clicketi-click game')
 ##### GAME LOGIC / FUNCTIONS #####
 
 # count how much coins buildings are producing total per second
-def coinsCounter(building):
+def coinsCounter(buildings):
 	coinsPerSec = 0
-	for x in building:
-		coinsPerSec += building[x]["coinPerBuilding"] * building[x]["amount"]
+	for x in buildings:
+		coinsPerSec += buildings[x]["coinPerBuilding"] * buildings[x]["amount"]
 	return coinsPerSec
 
 def text_block(coin, posX, posY):
@@ -107,6 +108,39 @@ def text_objects(text, font):
 	textSurface = font.render(text, True, black)
 	return textSurface, textSurface.get_rect()
 
+def button_object(btname, x, y, w, h, pgmain, pghover, clickX=0, clickY=0, action=None):
+	mouse = pygame.mouse.get_pos()
+
+	# fix this; mouse hover effect
+	if x+w > mouse[0] > x and y+h > mouse[1] > y :
+		pygame.draw.rect(gameDisplay, pghover,(x,y,w,h))
+
+	else:
+		pygame.draw.rect(gameDisplay, pgmain,(x,y,w,h))
+
+	if action is not None and x+w > clickX > x and y+h > clickY > y :
+		print(btname)
+		action()
+
+	btnSurf, btnText = text_objects(btname, pygame.font.Font("freesansbold.ttf",20))
+	btnText.center = ( (x+(w/2)), (y+(h/2)) )
+	gameDisplay.blit(btnSurf, btnText)
+
+def btn_building(btname, x, y, w, h, pgmain, pghover, clickX=0, clickY=0, action=None):
+
+
+	button_object(btname, x, y, w, h, pgmain, pghover, clickX, clickY, action)
+
+
+# Button click action to add iteration number to bulk buy button
+def bulkIterationFunc():
+	global bulkIterator
+
+	if bulkIterator >= 5:
+		bulkIterator = 0
+	else:
+		bulkIterator +=1
+
 ##### STARTING THE GAME LOOP #####
 def game_loop():
 
@@ -116,18 +150,22 @@ def game_loop():
 	clock = pygame.time.Clock()
 	gameExit = False
 
-	coinsPerSec = coinsCounter(building)
+	coinsPerSec = coinsCounter(buildings)
 	coin = 0
 
 	print(coinsPerSec)
 
+	#infinit loop
 	while not gameExit:
+		clickX, clickY = 0, 0
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				gameExit = True
 
+			if event.type == pygame.MOUSEBUTTONUP:
+				clickX, clickY = event.pos
+
 		mouse = pygame.mouse.get_pos()
-		print(mouse)
 
 		# actions and events that are hapening every second
 		if (datetime.now() - timeCounter).total_seconds() > 0.99 :
@@ -142,71 +180,25 @@ def game_loop():
 
 		text_block(coin, 0, 0)
 
-
-		#if 550+100 > mouse[0] > 550 and 450+50 > mouse[1] > 450:
-		#	pygame.draw.rect(gameDisplay, bright_red,(550,450,100,50))
-		#else :
-		#	pygame.draw.rect(gameDisplay, red,(550,450,100,50))
-
-
 		# Upgrades display on left side of the screen
 		upgradesBtnY = 100
-		for x in upgrades:
-			if 50+50 > mouse[0] > 50 and upgradesBtnY+50 > mouse[1] > upgradesBtnY :
-				pygame.draw.rect(gameDisplay, bright_red,(50,upgradesBtnY,50,50))
-			else :
-				pygame.draw.rect(gameDisplay, red,(50,upgradesBtnY,50,50))
-
-			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
-			btnText.center = ( (50+(100/2)), (upgradesBtnY+(50/2)) )
-			gameDisplay.blit(btnSurf, btnText)
-
+		for upgrade in upgrades:
+			button_object(upgrade, 50, upgradesBtnY, 50, 50, red, bright_red, clickX, clickY)
 			upgradesBtnY += 55
 
+		# buy more in bulk
+		button_object(bulk[bulkIterator], 400, 500, 100, 50, red, bright_red, clickX, clickY, bulkIterationFunc)
 
 		# Mana and spells on right side of the screen
 		spellBtnY = 100
-		for x in spells:
-			if 400+100 > mouse[0] > 400 and spellBtnY+50 > mouse[1] > spellBtnY :
-				pygame.draw.rect(gameDisplay, bright_red,(400,spellBtnY,100,50))
-			else :
-				pygame.draw.rect(gameDisplay, red,(400,spellBtnY,100,50))
-
-			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
-			btnText.center = ( (400+(100/2)), (spellBtnY+(50/2)) )
-			gameDisplay.blit(btnSurf, btnText)
-
+		for spell in spells:
+			button_object(spell, 400, spellBtnY, 100, 50, red, bright_red, clickX, clickY)
 			spellBtnY += 55
-
-		
-		bulkIterator = 0
-		if 400+100 > mouse[0] > 400 and 500+50 > mouse[1] > 500 :
-			pygame.draw.rect(gameDisplay, bright_red,(400,500,100,50))
-
-			if bulkIterator >= 5:
-				bulkIterator = 0
-			else:
-				bulkIterator +=1
-		else :
-			pygame.draw.rect(gameDisplay, red,(400,500,100,50))
-
-		btnSurf, btnText = text_objects(bulk[bulkIterator], pygame.font.Font("freesansbold.ttf",20))
-		btnText.center = ( (400+(100/2)), (500+(50/2)) )
-		gameDisplay.blit(btnSurf, btnText)
-
 
 		# Constructions on right side of the screen
 		buildingBtnY = 100
-		for x in building:
-			if 550+150 > mouse[0] > 550 and buildingBtnY+50 > mouse[1] > buildingBtnY :
-				pygame.draw.rect(gameDisplay, bright_red,(550,buildingBtnY,150,50))
-			else :
-				pygame.draw.rect(gameDisplay, red,(550,buildingBtnY,150,50))
-
-			btnSurf, btnText = text_objects(x, pygame.font.Font("freesansbold.ttf",20))
-			btnText.center = ( (550+(150/2)), (buildingBtnY+(50/2)) )
-			gameDisplay.blit(btnSurf, btnText)
-
+		for x in buildings:
+			button_object(x, 550, buildingBtnY, 150, 50, red, bright_red, clickX, clickY)
 			buildingBtnY += 55
 
 		##### KEEP THESE AT BOTTOM OF GAME LOOP
